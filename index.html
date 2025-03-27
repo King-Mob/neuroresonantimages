@@ -1,187 +1,84 @@
 <html>
   <head>
-    <title>\\::Neuroresonant Images:://</title>
+    <title>Neuroresonant Images</title>
     <meta name="viewport" content="width=device-width" />
     <style>
+      @font-face {
+        font-family: fantaisieArtistique;
+        src: url(FantaisieArtistique.ttf);
+      }
+
       body {
-        background-color: black;
-      }
-
-      .middle-content {
-        position: fixed;
-        left: 0;
-        top: 0;
+        background-color: #0c0c0c;
+        font-family: fantaisieArtistique;
         display: flex;
-        height: 100%;
-        width: 100%;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
       }
 
-      #gems {
-        animation: rotate 10s infinite linear;
+      #frame {
         display: flex;
+        flex-direction: row;
       }
 
-      #gems span {
-        font-size: 3rem;
-        animation: rotate 5s infinite linear reverse;
-      }
-
-      #canvas {
-        position: fixed;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        z-index: 0;
-      }
-
-      audio {
-        position: fixed;
-        left: 10px;
-        bottom: 10px;
-        width: calc(100% - 20px);
-      }
-
-      button {
+      .floral-title {
+        filter: invert(1) hue-rotate(50deg);
+        height: 400px;
+        margin: 20px;
         opacity: 0.7;
-        position: fixed;
-        border-radius: 50%;
-        font-size: 2rem;
-        width: 10rem;
-        height: 10rem;
+      }
+
+      #text {
+        width: 300px;
+        color: #c042b78f;
+        margin: 50px 0px;
+        font-size: 30px;
+        text-align: center;
+      }
+
+      #numbers {
+        width: 200px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+
+      .number {
+        font-family: fantaisieArtistique;
+        font-size: 50px;
+        background-color: rgba(0, 0, 0, 0);
+        color: rgba(150, 20, 20, 0.7);
         border: none;
-        z-index: 1;
-        animation: bud 2s infinite alternate-reverse linear;
-        color: white;
+        cursor: pointer;
       }
 
-      button:hover {
-        filter: brightness(1.4);
-      }
-
-      #button-back {
-        border-radius: 50%;
-        opacity: 0.6;
-        width: 10rem;
-        height: 10rem;
-        animation: bud 2s infinite alternate-reverse linear;
-        animation-delay: -1s;
-        transform: rotate(45deg);
-      }
-
-      @keyframes bud {
-        0% {
-          border-radius: 50%;
-          background-color: #e70d27;
-          color: #3515da;
-        }
-        100% {
-          border-radius: 0%;
-          background-color: #3515da;
-          color: #e70d27;
-        }
-      }
-
-      @keyframes rotate {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
+      .number:hover,
+      .number:active {
+        color: rgba(150, 20, 20, 1);
       }
     </style>
   </head>
   <body>
-    <div class="middle-content">
-      <div id="gems">
-        <span>💎</span>
-        <span>💎</span>
-        <span>💎</span>
-        <span>💎</span>
-        <span>💎</span>
-        <span>💎</span>
-        <span>💎</span>
+    <div id="frame">
+      <img class="floral-title" src="floral_title-cropped rotated.svg" />
+      <div id="text">
+        <p>hold tight of your brain lest it run quite away with you</p>
+        <p>more to the point you might run away with your brain</p>
+        <p>and get married in Spain</p>
+        <p>oh Senor, make an honest Senorita of your brain!</p>
       </div>
+      <img
+        class="floral-title"
+        src="floral_title-cropped rotated.svg"
+        style="transform: rotateY(180deg)"
+      />
     </div>
-    <div class="middle-content">
-      <span id="button-back"></span>
+    <div id="numbers">
+      <button class="number">1</button>
+      <button class="number">2</button>
+      <button class="number">3</button>
+      <button class="number">4</button>
+      <button class="number">5</button>
     </div>
-    <div class="middle-content">
-      <button id="start-button">loading crystalline cathedral</button>
-      <canvas id="canvas" style="display: none"></canvas>
-    </div>
-
-    <script>
-      const audio = document.createElement("audio");
-      const startButton = document.getElementById("start-button");
-      audio.src = "NeuroResonantImageICrystallineCathedral.mp3";
-      audio.load();
-      audio.addEventListener("loadeddata", () => {
-        startButton.innerHTML = "enter crystalline cathedral";
-      });
-
-      const start = () => {
-        startButton.style.display = "none";
-
-        audio.play();
-        const context = new AudioContext();
-        const src = context.createMediaElementSource(audio);
-        const analyser = context.createAnalyser();
-
-        const canvas = document.getElementById("canvas");
-        canvas.style.display = "block";
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const ctx = canvas.getContext("2d");
-
-        src.connect(analyser);
-        analyser.connect(context.destination);
-
-        analyser.fftSize = 256;
-
-        const bufferLength = analyser.frequencyBinCount;
-
-        const dataArray = new Uint8Array(bufferLength);
-
-        const WIDTH = canvas.width;
-        const HEIGHT = canvas.height;
-
-        const barWidth = (WIDTH / bufferLength) * 2.5;
-        let barHeight;
-        let x = 0;
-
-        function renderFrame() {
-          requestAnimationFrame(renderFrame);
-
-          x = 0;
-
-          analyser.getByteFrequencyData(dataArray);
-
-          ctx.fillStyle = "#000000";
-          ctx.fillRect(0, 0, WIDTH, HEIGHT);
-
-          for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] * 3;
-
-            const r = 50;
-            const g = 250 * (i / bufferLength);
-            const b = barHeight + 25 * (i / bufferLength);
-
-            ctx.fillStyle = `rgb( ${r},${g},${b},0.5)`;
-            ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-
-            x += barWidth + 1;
-          }
-        }
-
-        audio.play();
-        renderFrame();
-      };
-
-      startButton.onclick = start;
-    </script>
   </body>
 </html>
